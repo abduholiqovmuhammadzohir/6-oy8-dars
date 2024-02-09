@@ -22,7 +22,7 @@ h1{
 form{
     display: flex;
     gap: 40px;
-    margin-bottom:20px;
+    margin-bottom:0px;
 }
 form input{
     width:430px;
@@ -71,4 +71,20 @@ ul li:hover{
     cursor: pointer;
     font-size: 16px;
     font-weight: 700;
+}
+
+.clear{
+    background-color: royalblue;
+    color:white;
+    font-weight: 700;
+    border-radius: 5px;
+    border: none;
+    padding: 7px;
+    cursor: pointer;
+    transition: all 0.5s;
+}
+
+.clear:hover{
+    background-color: aqua;
+    color:black;
 }

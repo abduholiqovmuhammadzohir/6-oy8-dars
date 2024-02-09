@@ -55,6 +55,29 @@ function App() {
 
   }
 
+  function handleDelete(id, name) {
+    let isDelete = confirm(`Rosdan ham ${name} ni ochirmoqchimisiz `)
+    if (isDelete) {
+      let copied = JSON.parse(JSON.stringify(dataLocal))
+      copied = copied.filter(el => {
+        return el.id != id
+      })
+      setDataLocal(copied)
+      localStorage.setItem('todos',JSON.stringify(copied))
+    }
+  }
+
+  function allClear() {
+    if (dataLocal.length > 0) {
+      let a = confirm("Barchasini o'chirib tashlamoqchimisiz ?")
+      if (a) {
+        setDataLocal([])
+        localStorage.setItem('todos', [])
+      }
+    }
+  }
+
+
   return (
     <>
       <h1>Todo APP</h1>
@@ -70,17 +93,18 @@ function App() {
               return (
                 <li key={index}>
                   <div className='text'>
-                    <input checked={todo.status == "checked" ? true : false} onChange={() => { handleChacked(todo) }} type="checkbox" />
+                    <input checked={todo.status == "checked" ? true : false} onChange={(e) => { handleChacked(e, todo) }} type="checkbox" />
                     <span>{todo.name}</span>
                   </div>
                   <span className='deeds'>
                     <span>update</span>
-                    <span>delete</span>
+                    <span onClick={() => { handleDelete(todo.id, todo.name) }}>delete</span>
                   </span>
                 </li>
               )
             })
           }
+          <button className='clear' onClick={allClear}>All Clear</button>
         </ul>
       </div>
     </>
