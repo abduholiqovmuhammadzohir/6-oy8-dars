@@ -1,33 +1,88 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useRef, useState, useEffect } from 'react'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const inputRef = useRef('');
+  const [dataLocal, setDataLocal] = useState([]);
+
+  useEffect(() => {
+    let data = [];
+    if (localStorage.getItem('todos')) {
+      data = JSON.parse(localStorage.getItem('todos'))
+    }
+
+    setDataLocal(data);
+
+  }, [])
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    if (inputRef.current.value.trim().length < 3) {
+      alert("3 tadan kam belgin kiritish mumkin emas")
+      inputRef.current.focus();
+      return;
+    }
+
+    const todo = {
+      id: Date.now(),
+      name: inputRef.current.value,
+      status: "unchecked"
+    };
+
+    let copy = JSON.parse(JSON.stringify(dataLocal));
+    copy.push(todo);
+    setDataLocal(copy);
+    localStorage.setItem('todos', JSON.stringify(copy));
+    inputRef.current.value = '';
+
+  }
+
+  function handleChacked(e, todo) {
+    let copied = JSON.parse(JSON.stringify(dataLocal))
+    copied = copied.map(el => {
+      if (el.id == todo.id) {
+        if (e.target.checked) {
+          el.status = "checked"
+        } else {
+          el.status = "unchecked"
+        }
+      }
+      return el;
+    })
+
+    setDataLocal(copied);
+    localStorage.setItem('todos', JSON.stringify(copied))
+
+  }
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <h1>Todo APP</h1>
+      <div className="todo-wrapper">
+        <form onSubmit={handleSubmit}>
+          <input ref={inputRef} type="text" placeholder='Enter name...' />
+          <button>OK</button>
+        </form>
+        <br />
+        <ul>
+          {
+            dataLocal.map((todo, index) => {
+              return (
+                <li key={index}>
+                  <div className='text'>
+                    <input checked={todo.status == "checked" ? true : false} onChange={() => { handleChacked(todo) }} type="checkbox" />
+                    <span>{todo.name}</span>
+                  </div>
+                  <span className='deeds'>
+                    <span>update</span>
+                    <span>delete</span>
+                  </span>
+                </li>
+              )
+            })
+          }
+        </ul>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
   )
 }
