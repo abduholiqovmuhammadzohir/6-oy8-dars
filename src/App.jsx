@@ -4,6 +4,9 @@ import './App.css'
 function App() {
   const inputRef = useRef('');
   const [dataLocal, setDataLocal] = useState([]);
+  const [update, setUpdate] = useState(false)
+  const [updateId, setUpdateId] = useState();
+  const [updateName, setUpdateName] = useState("");
 
   useEffect(() => {
     let data = [];
@@ -63,9 +66,29 @@ function App() {
         return el.id != id
       })
       setDataLocal(copied)
-      localStorage.setItem('todos',JSON.stringify(copied))
+      localStorage.setItem('todos', JSON.stringify(copied))
     }
   }
+  function handleUpdateMain() {
+    handleUpdate();
+    inputRef.current.value = ""
+    setUpdate(false)
+
+  }
+
+  function handleUpdate() {
+    let copied = JSON.parse(JSON.stringify(dataLocal))
+    copied = copied.map(el => {
+      if (el.id == updateId) {
+        el.name = inputRef.current.value
+      }
+      return el
+    })
+    setDataLocal(copied)
+    localStorage.setItem('todos', JSON.stringify(copied))
+  }
+
+
 
   function allClear() {
     if (dataLocal.length > 0) {
@@ -82,9 +105,14 @@ function App() {
     <>
       <h1>Todo APP</h1>
       <div className="todo-wrapper">
-        <form onSubmit={handleSubmit}>
-          <input ref={inputRef} type="text" placeholder='Enter name...' />
-          <button>OK</button>
+        <form >
+          <input maxLength={45} ref={inputRef} type="text" placeholder='Enter name...' />
+          {
+            update ? <button onClick={(e) => {
+              e.preventDefault();
+              handleUpdateMain() 
+            }}>Update</button> : <button onClick={handleSubmit}>OK</button>
+          }
         </form>
         <br />
         <ul>
@@ -97,7 +125,13 @@ function App() {
                     <span>{todo.name}</span>
                   </div>
                   <span className='deeds'>
-                    <span>update</span>
+                    <span onClick={() => {
+                      setUpdate(true)
+                      setUpdateName(todo.name)
+                      setUpdateId(todo.id)
+                      inputRef.current.value = updateName
+                      handleUpdate()
+                    }} >update</span>
                     <span onClick={() => { handleDelete(todo.id, todo.name) }}>delete</span>
                   </span>
                 </li>
