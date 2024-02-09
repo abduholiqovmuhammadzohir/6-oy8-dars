@@ -12,7 +12,8 @@ h1{
 .todo-wrapper{
     max-width: 550px;
     width: 100%;
-    border: 3px solid rgb(179, 78, 15);
+    border: 3px solid black;
+    box-shadow: 3px 3px 4px 4px gray;
     padding: 15px;
     border-radius:10px;
     margin: 0 auto;
@@ -48,9 +49,6 @@ ul li{
     border-radius:5px;
     transition: all 1s;
     margin-bottom:20px;
-}
-ul li:hover{
-    background-color: aqua;
 }
 
 .text{
